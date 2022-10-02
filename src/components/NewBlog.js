@@ -1,27 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { createNewBlog } from '../services/blogs';
 
 const NewBlog = ({
-  title,
-  author,
-  url,
-  setTitle,
-  setAuthor,
-  setUrl,
   setNotifType,
   setConfirmationMessage,
+  setVisibleBLogForm,
 }) => {
+  const [title, setTitle] = useState('');
+  const [author, setAuthor] = useState('');
+  const [url, setUrl] = useState('');
   const addBlog = async () => {
     try {
       await createNewBlog({ title, author, url });
       setConfirmationMessage(`a new blog ${title} was added by ${author}`);
       setNotifType('success');
+      setVisibleBLogForm(false);
     } catch (error) {
       setConfirmationMessage(error);
       setNotifType('error');
     }
   };
-
+  const cancelEvent = (e) => {
+    e.preventDefault();
+    setVisibleBLogForm(false);
+  };
   return (
     <>
       <h1>Create new</h1>
@@ -54,6 +56,7 @@ const NewBlog = ({
           />
         </div>
         <button type="submit">Create</button>
+        <button onClick={cancelEvent}>cancel</button>
       </form>
     </>
   );
