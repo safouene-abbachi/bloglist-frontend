@@ -3,6 +3,7 @@ import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import NewBlog from './components/NewBlog';
 import Notifications from './components/Notifications';
+import Togglable from './components/Togglable';
 import { addLikes, deleteBlogUser, getAll, setToken } from './services/blogs';
 import './App.css';
 const App = () => {
@@ -10,11 +11,9 @@ const App = () => {
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-  const [visibleBlogForm, setVisibleBLogForm] = useState(false);
+
   const [notifType, setNotifType] = useState('');
   const [confirmationMessage, setConfirmationMessage] = useState('');
-
-  const showNewBlogForm = { display: !visibleBlogForm ? 'none' : '' };
 
   useEffect(() => {
     getAll().then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
@@ -97,26 +96,24 @@ const App = () => {
           <button onClick={logout}>logout</button>
           <h2>blogs</h2>
           <p>{user.name} is logged-in</p>
-          <button onClick={() => setVisibleBLogForm(true)} type="submit">
-            new blog
-          </button>
-          <div style={showNewBlogForm}>
+
+          <Togglable>
             <NewBlog
               token={user.token}
               setNotifType={setNotifType}
               setConfirmationMessage={setConfirmationMessage}
-              setVisibleBLogForm={setVisibleBLogForm}
             />
-            {blogs.map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                addLikesToBlog={addLikesToBlog}
-                user={user}
-                deleteBlog={deleteBlog}
-              />
-            ))}
-          </div>
+          </Togglable>
+
+          {blogs.map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              addLikesToBlog={addLikesToBlog}
+              user={user}
+              deleteBlog={deleteBlog}
+            />
+          ))}
         </div>
       )}
     </div>

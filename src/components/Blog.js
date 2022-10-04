@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import PropTypes from 'prop-types';
 const blogStyle = {
   paddingTop: 10,
   paddingLeft: 2,
@@ -39,4 +39,10 @@ const Blog = ({ blog, addLikesToBlog, user, deleteBlog }) => {
   );
 };
 
+Blog.propTypes = {
+  blog: PropTypes.object.isRequired,
+  addLikesToBlog: PropTypes.func.isRequired,
+  user: PropTypes.object.isRequired,
+  deleteBlog: PropTypes.func.isRequired,
+};
 export default Blog;
