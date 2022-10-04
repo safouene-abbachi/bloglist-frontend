@@ -54,6 +54,11 @@ const App = () => {
       ) {
         console.log('here');
         await deleteBlogUser(blogData);
+        setBlogs(
+          blogs
+            .filter((blog) => blog.id !== blogData.id)
+            .sort((a, b) => b.likes - a.likes)
+        );
         setConfirmationMessage(
           `blog ${blogData.title} was deleted by ${blogData.author}`
         );
