@@ -18,12 +18,13 @@ const NewBlog = ({ setNotifType, setConfirmationMessage }) => {
   };
 
   return (
-    <>
+    <div className="formWrapper">
       <h1>Create new</h1>
-      <form onSubmit={addBlog}>
+      <form data-testid="submitForm" onSubmit={addBlog}>
         <div>
           Title
           <input
+            data-testid="title"
             type="text"
             value={title}
             name="title"
@@ -33,6 +34,7 @@ const NewBlog = ({ setNotifType, setConfirmationMessage }) => {
         <div>
           Author
           <input
+            data-testid="cauthor"
             type="text"
             value={author}
             name="author"
@@ -42,6 +44,7 @@ const NewBlog = ({ setNotifType, setConfirmationMessage }) => {
         <div>
           Url
           <input
+            data-testid="url"
             type="text"
             value={url}
             name="url"
@@ -50,7 +53,7 @@ const NewBlog = ({ setNotifType, setConfirmationMessage }) => {
         </div>
         <button type="submit">Create</button>
       </form>
-    </>
+    </div>
   );
 };
 

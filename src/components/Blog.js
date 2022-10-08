@@ -12,29 +12,33 @@ const titleStyle = { fontSize: '30px', fontWeight: 'bold' };
 const Blog = ({ blog, addLikesToBlog, user, deleteBlog }) => {
   console.log('🚀 ~ blog', blog);
   const [showInfo, setShowInfo] = useState(false);
-  const showDeleteButton = user.name === blog?.user?.name;
+  const showDeleteButton = user?.name === blog?.user?.name;
+  const showDetails = { display: showInfo ? '' : 'none' };
+  const hideDetails = {
+    display: showInfo ? 'none' : '',
+    backgroundColor: 'red',
+    color: '#FFF',
+  };
   return (
-    <div style={blogStyle}>
-      <span style={titleStyle}>{blog.title}</span>
+    <div style={blogStyle} className="blog">
+      <span style={titleStyle}>
+        {blog.author}-{blog.title}
+      </span>
       <button onClick={() => setShowInfo(!showInfo)}>
         {showInfo ? 'hide' : 'view'}
       </button>
-      {showInfo && (
-        <>
-          <p>{blog.url}</p>
-          <span>{blog.likes}</span>
-          <button onClick={() => addLikesToBlog(blog)}>like</button>
-          <p>{blog.author}</p>
-          {showDeleteButton && (
-            <button
-              style={{ backgroundColor: 'red', color: '#FFF' }}
-              onClick={() => deleteBlog(blog)}
-            >
-              remove
-            </button>
-          )}
-        </>
-      )}
+
+      <div style={showDetails} className="togglableContent">
+        <p>{blog.url}</p>
+        <span className="likes">{blog.likes}</span>
+        <button onClick={() => addLikesToBlog(blog)}>like</button>
+        <p>{blog.author}</p>
+        {showDeleteButton && (
+          <button style={hideDetails} onClick={() => deleteBlog(blog)}>
+            remove
+          </button>
+        )}
+      </div>
     </div>
   );
 };
