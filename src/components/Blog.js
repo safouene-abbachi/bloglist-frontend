@@ -14,11 +14,7 @@ const Blog = ({ blog, addLikesToBlog, user, deleteBlog }) => {
   const [showInfo, setShowInfo] = useState(false);
   const showDeleteButton = user?.name === blog?.user?.name;
   const showDetails = { display: showInfo ? '' : 'none' };
-  const hideDetails = {
-    display: showInfo ? 'none' : '',
-    backgroundColor: 'red',
-    color: '#FFF',
-  };
+
   return (
     <div style={blogStyle} className="blog">
       <span style={titleStyle}>
@@ -34,9 +30,7 @@ const Blog = ({ blog, addLikesToBlog, user, deleteBlog }) => {
         <button onClick={() => addLikesToBlog(blog)}>like</button>
         <p>{blog.author}</p>
         {showDeleteButton && (
-          <button style={hideDetails} onClick={() => deleteBlog(blog)}>
-            remove
-          </button>
+          <button onClick={() => deleteBlog(blog)}>remove</button>
         )}
       </div>
     </div>

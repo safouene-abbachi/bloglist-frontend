@@ -4,7 +4,13 @@ import LoginForm from './components/LoginForm';
 import NewBlog from './components/NewBlog';
 import Notifications from './components/Notifications';
 import Togglable from './components/Togglable';
-import { addLikes, deleteBlogUser, getAll, setToken } from './services/blogs';
+import {
+  addLikes,
+  createNewBlog,
+  deleteBlogUser,
+  getAll,
+  setToken,
+} from './services/blogs';
 import './App.css';
 const App = () => {
   const [blogs, setBlogs] = useState([]);
@@ -26,7 +32,16 @@ const App = () => {
       setToken(JSON.parse(alreadyLoggedInUser).token);
     }
   }, []);
-
+  const addBlog = async (title, author, url) => {
+    try {
+      await createNewBlog({ title, author, url });
+      setConfirmationMessage(`a new blog ${title} was added by ${author}`);
+      setNotifType('success');
+    } catch (error) {
+      setConfirmationMessage(error);
+      setNotifType('error');
+    }
+  };
   const addLikesToBlog = async (blogData) => {
     try {
       await addLikes({
@@ -101,6 +116,7 @@ const App = () => {
             <NewBlog
               token={user.token}
               setNotifType={setNotifType}
+              addBlog={addBlog}
               setConfirmationMessage={setConfirmationMessage}
             />
           </Togglable>

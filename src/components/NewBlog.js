@@ -1,57 +1,50 @@
 import React, { useState } from 'react';
-import { createNewBlog } from '../services/blogs';
 
-const NewBlog = ({ setNotifType, setConfirmationMessage }) => {
+const NewBlog = ({ addBlog }) => {
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
-  const addBlog = async () => {
-    try {
-      await createNewBlog({ title, author, url });
-      setConfirmationMessage(`a new blog ${title} was added by ${author}`);
-      setNotifType('success');
-    } catch (error) {
-      setConfirmationMessage(error);
-      setNotifType('error');
-    }
-  };
-
   return (
     <div className="formWrapper">
       <h1>Create new</h1>
-      <form data-testid="submitForm" onSubmit={addBlog}>
+      <form className="form" onSubmit={() => addBlog(title, author, url)}>
         <div>
-          Title
           <input
-            data-testid="title"
+            data-testid="Title"
             type="text"
             value={title}
             name="title"
+            id="Title"
             onChange={({ target }) => setTitle(target.value)}
           />
+          <label htmlFor="Title">Title</label>
         </div>
         <div>
-          Author
+          <label htmlFor="Author">Author</label>
           <input
             data-testid="cauthor"
             type="text"
             value={author}
             name="author"
+            id="Author"
             onChange={({ target }) => setAuthor(target.value)}
           />
         </div>
         <div>
-          Url
+          <label htmlFor="Url">Url</label>
           <input
             data-testid="url"
             type="text"
             value={url}
             name="url"
+            id="Url"
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button type="submit">Create</button>
+        <button data-testid="send" type="submit">
+          Create
+        </button>
       </form>
     </div>
   );

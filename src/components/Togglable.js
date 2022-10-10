@@ -11,7 +11,12 @@ const Togglable = ({ children }) => {
 
   return (
     <>
-      <button style={hideWhenVisible} onClick={toggleVisibility} type="submit">
+      <button
+        className="newBlog"
+        style={hideWhenVisible}
+        onClick={toggleVisibility}
+        type="submit"
+      >
         new blog
       </button>
       <div style={showWhenVisible}>

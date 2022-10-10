@@ -1,28 +1,28 @@
 import React from 'react';
 import '@testing-library/jest-dom/extend-expect';
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render, fireEvent } from '@testing-library/react';
 import BlogForm from '../components/NewBlog';
 
 test('check form event handler and right details', async () => {
   const handleSubmit = jest.fn();
-  const visibilityButton = screen.getByText('new blog');
-  console.log('🚀 ~ visibilityButton', visibilityButton);
-  await user.click(visibilityButton);
-  const sendButton = screen.getByText('Create');
 
-  const user = userEvent.setup();
-  const titleInput = screen.getByTestId('#title');
-  const authorInput = screen.getByTestId('#author');
-  const urlInput = screen.getByTestId('#url');
+  const component = render(<BlogForm addBlog={handleSubmit} />);
 
-  await user.type(titleInput, 'hello');
-  await user.type(authorInput, 'safouene');
-  await user.type(urlInput, 'google.com');
+  const form = component.container.querySelector('form');
 
-  await user.click(sendButton);
+  const titleInput = component.getByLabelText('Title');
+  const authorInput = component.getByLabelText('Author');
+  const urlInput = component.getByLabelText('Url');
+
+  fireEvent.change(titleInput, { target: { value: 'hello' } });
+  fireEvent.change(authorInput, { target: { value: 'safouene' } });
+  fireEvent.change(urlInput, { target: { value: 'google.com' } });
+
+  fireEvent.submit(form);
+
   expect(handleSubmit.mock.calls).toHaveLength(1);
-  expect(handleSubmit.mock.calls[0][0].title).toBe('hello');
-  expect(handleSubmit.mock.calls[0][0].author).toBe('safouene');
-  expect(handleSubmit.mock.calls[0][0].url).toBe('google.com');
+  console.log(handleSubmit.mock.calls);
+  expect(handleSubmit.mock.calls[0][0]).toBe('hello');
+  expect(handleSubmit.mock.calls[0][1]).toBe('safouene');
+  expect(handleSubmit.mock.calls[0][2]).toBe('google.com');
 });
