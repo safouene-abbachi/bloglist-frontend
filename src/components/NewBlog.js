@@ -42,7 +42,7 @@ const NewBlog = ({ addBlog }) => {
             onChange={({ target }) => setUrl(target.value)}
           />
         </div>
-        <button data-testid="send" type="submit">
+        <button id="create_blog_button" data-testid="send" type="submit">
           Create
         </button>
       </form>
