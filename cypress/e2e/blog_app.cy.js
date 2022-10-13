@@ -51,19 +51,53 @@ describe('blog app', function () {
 
     describe('Existing blog', function () {
       beforeEach(function () {
-        const blog = {
+        cy.CreateBlog({
           title: 'Creating new Blog',
           author: 'John',
           url: 'http://example.com',
           likes: 0,
-        };
-        cy.CreateBlog(blog);
+        });
       });
 
       it('user can like a blog', function () {
         cy.contains('view').click();
         cy.contains('like').click();
         cy.get('.likes').contains(1);
+      });
+      it('user can delete a blog', function () {
+        cy.contains('view').click();
+        cy.contains('remove').click();
+        cy.contains('blog Creating new Blog was deleted by John');
+      });
+    });
+
+    describe('ordering blogs by number of likes', function () {
+      beforeEach(function () {
+        cy.contains('new blog').click();
+        cy.CreateBlog({
+          title: 'first blog',
+          author: 'John',
+          url: 'http://example.com',
+          likes: 2,
+        });
+        cy.CreateBlog({
+          title: 'second blog',
+          author: 'John',
+          url: 'http://example.com',
+          likes: 0,
+        });
+        cy.CreateBlog({
+          title: 'third blog',
+          author: 'John',
+          url: 'http://example.com',
+          likes: 15,
+        });
+      });
+      it('contains 3 blogs in the right order', function () {
+        cy.get('.blogList').children().should('have.length', 3);
+        cy.get('.blog').eq(0).should('contain', 'John-third blog');
+        cy.get('.blog').eq(1).should('contain', 'John-first blog');
+        cy.get('.blog').eq(2).should('contain', 'John-second blog');
       });
     });
   });
