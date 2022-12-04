@@ -8,7 +8,7 @@ const NewBlog = ({ addBlog }) => {
   return (
     <div className="formWrapper">
       <h1>Create new</h1>
-      <form className="form" onSubmit={() => addBlog(title, author, url)}>
+      <form className="form" onSubmit={(e) => addBlog(e, title, author, url)}>
         <div>
           <input
             data-testid="Title"

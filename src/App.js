@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Blog from './components/Blog';
 import LoginForm from './components/LoginForm';
 import NewBlog from './components/NewBlog';
@@ -8,21 +9,23 @@ import {
   addLikes,
   createNewBlog,
   deleteBlogUser,
-  getAll,
   setToken,
 } from './services/blogs';
+import { initilizeBlogs } from './redux/reducers/blogReducer';
+import { setNotifications } from './redux/reducers/notificationReducer';
 import './App.css';
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
+  const blogs = useSelector((state) => state.blogs);
+
+  const dispatch = useDispatch();
   const [userName, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [user, setUser] = useState(null);
-
-  const [notifType, setNotifType] = useState('');
-  const [confirmationMessage, setConfirmationMessage] = useState('');
+  // const [notifType, setNotifType] = useState('');
+  // const [confirmationMessage, setConfirmationMessage] = useState('');
 
   useEffect(() => {
-    getAll().then((blogs) => setBlogs(blogs.sort((a, b) => b.likes - a.likes)));
+    dispatch(initilizeBlogs());
   }, []);
 
   useEffect(() => {
@@ -32,14 +35,34 @@ const App = () => {
       setToken(JSON.parse(alreadyLoggedInUser).token);
     }
   }, []);
-  const addBlog = async (title, author, url) => {
+  const addBlog = async (e, title, author, url) => {
+    e.preventDefault();
     try {
       await createNewBlog({ title, author, url });
-      setConfirmationMessage(`a new blog ${title} was added by ${author}`);
-      setNotifType('success');
+      dispatch(initilizeBlogs());
+      dispatch(
+        setNotifications(
+          'success',
+          `a new blog ${title} was added by ${author}`,
+          5
+        )
+      );
+
+      // dispatch({
+      //   type: 'SET_NOTIF',
+      //   payload: {
+      //     notifType: 'success',
+      //     confirmationMessage: `a new blog ${title} was added by ${author}`,
+      //   },
+      // });
     } catch (error) {
-      setConfirmationMessage(error);
-      setNotifType('error');
+      dispatch({
+        type: 'SET_NOTIF',
+        payload: {
+          notifType: 'error',
+          confirmationMessage: error,
+        },
+      });
     }
   };
   const addLikesToBlog = async (blogData) => {
@@ -48,15 +71,15 @@ const App = () => {
         ...blogData,
         likes: blogData.likes + 1,
       });
-      setBlogs(
-        blogs
-          .map((blog) => {
-            return blog.id === blogData.id
-              ? { ...blogData, likes: blog.likes + 1 }
-              : blog;
-          })
-          .sort((a, b) => b.likes - a.likes)
-      );
+      // setBlogs(
+      //   blogs
+      //     .map((blog) => {
+      //       return blog.id === blogData.id
+      //         ? { ...blogData, likes: blog.likes + 1 }
+      //         : blog;
+      //     })
+      //     .sort((a, b) => b.likes - a.likes)
+      // );
     } catch (error) {
       console.log(error);
     }
@@ -68,19 +91,19 @@ const App = () => {
       ) {
         console.log('here');
         await deleteBlogUser(blogData);
-        setBlogs(
-          blogs
-            .filter((blog) => blog.id !== blogData.id)
-            .sort((a, b) => b.likes - a.likes)
-        );
-        setConfirmationMessage(
-          `blog ${blogData.title} was deleted by ${blogData.author}`
-        );
-        setNotifType('success');
+        // setBlogs(
+        //   blogs
+        //     .filter((blog) => blog.id !== blogData.id)
+        //     .sort((a, b) => b.likes - a.likes)
+        // );
+        // setConfirmationMessage(
+        //   `blog ${blogData.title} was deleted by ${blogData.author}`
+        // );
+        // setNotifType('success');
       }
     } catch (error) {
-      setConfirmationMessage(error);
-      setNotifType('error');
+      // setConfirmationMessage(error);
+      // setNotifType('error');
     }
   };
   const logout = () => {
@@ -89,10 +112,7 @@ const App = () => {
   };
   return (
     <div>
-      <Notifications
-        confirmationMessage={confirmationMessage}
-        notifType={notifType}
-      />
+      <Notifications />
       {!user ? (
         <div>
           <h1>Log into Application</h1>
@@ -102,8 +122,8 @@ const App = () => {
             setUserName={setUserName}
             setPassword={setPassword}
             setUser={setUser}
-            setNotifType={setNotifType}
-            setConfirmationMessage={setConfirmationMessage}
+            // setNotifType={setNotifType}
+            // setConfirmationMessage={setConfirmationMessage}
           />
         </div>
       ) : (
@@ -113,15 +133,10 @@ const App = () => {
           <p>{user.name} is logged-in</p>
 
           <Togglable>
-            <NewBlog
-              token={user.token}
-              setNotifType={setNotifType}
-              addBlog={addBlog}
-              setConfirmationMessage={setConfirmationMessage}
-            />
+            <NewBlog token={user.token} addBlog={addBlog} />
           </Togglable>
           <div className="blogList">
-            {blogs.map((blog) => (
+            {blogs?.map((blog) => (
               <Blog
                 key={blog.id}
                 blog={blog}
