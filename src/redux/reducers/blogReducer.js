@@ -1,12 +1,36 @@
 /* eslint-disable */
-import { GET_BLOGS } from '../actionTypes/actionTypes';
-import { getAll } from '../../services/blogs';
+import {
+  GET_BLOGS,
+  ADD_BLOG,
+  DELETE_BLOG,
+  LIKE_BLOG,
+} from '../actionTypes/actionTypes';
+import {
+  addLikes,
+  createNewBlog,
+  deleteBlogUser,
+  getAll,
+} from '../../services/blogs';
+import { setNotifications } from './notificationReducer';
 
 const blogReducer = (state = [], action) => {
   switch (action.type) {
     case GET_BLOGS:
       return action.payload;
-
+    case ADD_BLOG:
+      return [...state, action.payload];
+    case DELETE_BLOG:
+      return state
+        .filter((blog) => blog.id !== action.payload)
+        .sort((a, b) => b.likes - a.likes);
+    case LIKE_BLOG:
+      return state
+        .map((blog) => {
+          return blog.id === action.payload.id
+            ? { ...action.payload, likes: blog.likes + 1 }
+            : blog;
+        })
+        .sort((a, b) => b.likes - a.likes);
     default:
       return state;
   }
@@ -22,4 +46,54 @@ export const initilizeBlogs = () => {
   };
 };
 
+export const newBlog = (title, author, url) => {
+  return async (dispatch) => {
+    const newB = await createNewBlog({ title, author, url });
+
+    dispatch({
+      type: 'ADD_BLOG',
+      payload: newB,
+    });
+  };
+};
+export const deleteBlogById = (blogData) => {
+  console.log('🚀 ~ blogData', blogData);
+  return async (dispatch) => {
+    try {
+      await deleteBlogUser(blogData);
+      dispatch({
+        type: 'DELETE_BLOG',
+        payload: blogData.id,
+      });
+      dispatch(
+        setNotifications(
+          'success',
+          `blog ${blogData.title} was deleted by ${blogData.author}`,
+          5
+        )
+      );
+    } catch (error) {
+      console.log('🚀 ~ error', error);
+      dispatch(setNotifications('error', error.response.data, 5));
+    }
+  };
+};
+
+export const updateBlog = (blogData) => {
+  return async (dispatch) => {
+    try {
+      await addLikes({
+        ...blogData,
+        likes: blogData.likes + 1,
+      });
+      dispatch({
+        type: 'LIKE_BLOG',
+        payload: blogData,
+      });
+    } catch (error) {
+      console.log('🚀 ~ error', error);
+      dispatch(setNotifications('error', error.response.data, 5));
+    }
+  };
+};
 export default blogReducer;

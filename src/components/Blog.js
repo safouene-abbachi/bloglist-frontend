@@ -10,7 +10,6 @@ const blogStyle = {
 const titleStyle = { fontSize: '30px', fontWeight: 'bold' };
 
 const Blog = ({ blog, addLikesToBlog, user, deleteBlog }) => {
-  console.log('🚀 ~ blog', blog);
   const [showInfo, setShowInfo] = useState(false);
   const showDeleteButton = user?.name === blog?.user?.name;
   const showDetails = { display: showInfo ? '' : 'none' };

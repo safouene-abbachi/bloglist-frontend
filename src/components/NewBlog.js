@@ -1,10 +1,36 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { initilizeBlogs, newBlog } from '../redux/reducers/blogReducer';
+import { setNotifications } from '../redux/reducers/notificationReducer';
 
-const NewBlog = ({ addBlog }) => {
+const NewBlog = () => {
+  const dispatch = useDispatch();
   const [title, setTitle] = useState('');
   const [author, setAuthor] = useState('');
   const [url, setUrl] = useState('');
 
+  const addBlog = async (e, title, author, url) => {
+    e.preventDefault();
+    try {
+      dispatch(newBlog(title, author, url));
+      dispatch(initilizeBlogs());
+      dispatch(
+        setNotifications(
+          'success',
+          `a new blog ${title} was added by ${author}`,
+          5
+        )
+      );
+    } catch (error) {
+      dispatch({
+        type: 'SET_NOTIF',
+        payload: {
+          notifType: 'error',
+          confirmationMessage: error,
+        },
+      });
+    }
+  };
   return (
     <div className="formWrapper">
       <h1>Create new</h1>

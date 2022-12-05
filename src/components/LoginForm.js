@@ -1,31 +1,16 @@
-import React from 'react';
-import { setToken } from '../services/blogs';
-import login from '../services/login';
-const LoginForm = ({
-  username,
-  password,
-  setUserName,
-  setPassword,
-  setUser,
-  setNotifType,
-  setConfirmationMessage,
-}) => {
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { loginUser } from '../redux/reducers/loginReducer';
+
+const LoginForm = () => {
+  const dispatch = useDispatch();
+  const [username, setUserName] = useState('');
+  const [password, setPassword] = useState('');
   const handleLogin = async (e) => {
     e.preventDefault();
-    try {
-      const result = await login({ username, password });
-      localStorage.setItem('user', JSON.stringify(result));
-      setUser(result);
-      setToken(result.token);
-      setUserName('');
-      setPassword('');
-      setConfirmationMessage('Successfully logged-in');
-      setNotifType('success');
-    } catch (error) {
-      console.log('🚀 ~ error', error);
-      setConfirmationMessage(error.response.data.error);
-      setNotifType('error');
-    }
+    dispatch(loginUser(username, password));
+    setUserName('');
+    setPassword('');
   };
 
   return (

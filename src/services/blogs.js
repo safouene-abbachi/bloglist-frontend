@@ -1,10 +1,6 @@
 import axios from 'axios';
 const baseUrl = '/api/blogs';
-let token = null;
-
-const setToken = (newToken) => {
-  token = `bearer ${newToken}`;
-};
+let token = `bearer ${JSON.parse(localStorage.getItem('user')).token}`;
 
 const getAll = () => {
   const request = axios.get(baseUrl);
@@ -32,7 +28,6 @@ const addLikes = async (blog) => {
 };
 
 const deleteBlogUser = async (blog) => {
-  console.log('🚀 ~ blog', blog);
   const config = {
     headers: {
       Authorization: token,
@@ -42,4 +37,4 @@ const deleteBlogUser = async (blog) => {
   console.log('🚀 ~ result', result);
   return result.data;
 };
-export { getAll, setToken, createNewBlog, addLikes, deleteBlogUser };
+export { getAll, createNewBlog, addLikes, deleteBlogUser };
