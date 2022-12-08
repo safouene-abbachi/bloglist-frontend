@@ -37,4 +37,19 @@ const deleteBlogUser = async (blog) => {
   console.log('🚀 ~ result', result);
   return result.data;
 };
-export { getAll, createNewBlog, addLikes, deleteBlogUser };
+
+const addComment = async (title, id) => {
+  const config = {
+    headers: {
+      Authorization: token,
+    },
+  };
+  const result = await axios.post(
+    `${baseUrl}/${id}/comments`,
+    { title },
+    config
+  );
+  console.log('🚀 ~ result', result);
+  return result.data;
+};
+export { getAll, createNewBlog, addLikes, deleteBlogUser, addComment };

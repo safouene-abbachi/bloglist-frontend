@@ -4,8 +4,10 @@ import {
   ADD_BLOG,
   DELETE_BLOG,
   LIKE_BLOG,
+  ADD_COMMENT,
 } from '../actionTypes/actionTypes';
 import {
+  addComment,
   addLikes,
   createNewBlog,
   deleteBlogUser,
@@ -31,6 +33,17 @@ const blogReducer = (state = [], action) => {
             : blog;
         })
         .sort((a, b) => b.likes - a.likes);
+    case ADD_COMMENT:
+      const { blogId, title, id: commentId } = action.payload;
+      const blog = state.find((blog) => {
+        return blog.id === blogId;
+      });
+
+      const newComment = { title, commentId };
+      const updateBlog = { ...blog, comments: [...blog.comments, newComment] };
+      return state.map((blog) => {
+        return blog.id === updateBlog.id ? updateBlog : blog;
+      });
     default:
       return state;
   }
@@ -94,6 +107,17 @@ export const updateBlog = (blogData) => {
       console.log('🚀 ~ error', error);
       dispatch(setNotifications('error', error.response.data, 5));
     }
+  };
+};
+
+export const addCommentToBlog = (title, id) => {
+  return async (dispatch) => {
+    const newComment = await addComment(title, id);
+    console.log('🚀 ~ newComment', newComment);
+    dispatch({
+      type: ADD_COMMENT,
+      payload: { ...newComment, blogId: id },
+    });
   };
 };
 export default blogReducer;

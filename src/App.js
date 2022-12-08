@@ -1,53 +1,29 @@
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import Blog from './components/Blog';
+import { Routes, Route } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
-import NewBlog from './components/NewBlog';
+import Blogs from './components/Blogs';
 import Notifications from './components/Notifications';
-import Togglable from './components/Togglable';
-import {
-  deleteBlogById,
-  initilizeBlogs,
-  updateBlog,
-} from './redux/reducers/blogReducer';
+import Users from './components/Users';
+import BlogsPerUser from './components/BlogsPerUser';
+import NavBar from './components/NavBar';
+import { initilizeBlogs } from './redux/reducers/blogReducer';
 import './App.css';
-import { logoutUser } from './redux/reducers/loginReducer';
+// import BlogView from './components/BlogView';
+import Blog from './components/Blog';
+
 const App = () => {
-  const blogs = useSelector((state) => state.blogs);
   const { user } = useSelector((state) => state.login);
-  console.log('🚀 ~ user', user);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
     dispatch(initilizeBlogs());
   }, []);
 
-  const addLikesToBlog = async (blogData) => {
-    dispatch(updateBlog(blogData));
-    // await addLikes({
-    //   ...blogData,
-    //   likes: blogData.likes + 1,
-    // });
-    // setBlogs(
-    //   blogs
-    //     .map((blog) => {
-    //       return blog.id === blogData.id
-    //         ? { ...blogData, likes: blog.likes + 1 }
-    //         : blog;
-    //     })
-    //     .sort((a, b) => b.likes - a.likes)
-    // );
-  };
-  const deleteBlog = async (blogData) => {
-    if (window.confirm(`Remove blog ${blogData.title} by ${blogData.author}`)) {
-      dispatch(deleteBlogById(blogData));
-    }
-  };
-  const logout = () => {
-    dispatch(logoutUser());
-  };
   return (
     <div>
+      <NavBar />
       <Notifications />
       {!user ? (
         <div>
@@ -56,24 +32,12 @@ const App = () => {
         </div>
       ) : (
         <div>
-          <button onClick={logout}>logout</button>
-          <h2>blogs</h2>
-          <p>{user.name} is logged-in</p>
-
-          <Togglable>
-            <NewBlog token={user.token} />
-          </Togglable>
-          <div className="blogList">
-            {blogs?.map((blog) => (
-              <Blog
-                key={blog.id}
-                blog={blog}
-                addLikesToBlog={addLikesToBlog}
-                user={user}
-                deleteBlog={deleteBlog}
-              />
-            ))}
-          </div>
+          <Routes>
+            <Route path="/blogs" element={<Blogs />} />
+            <Route path="/users" element={<Users />} />
+            <Route path="/users/:id" element={<BlogsPerUser />} />
+            <Route path="/blogs/:id" element={<Blog />} />
+          </Routes>
         </div>
       )}
     </div>

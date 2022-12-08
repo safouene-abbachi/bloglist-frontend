@@ -6,3 +6,5 @@ export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
 export const DELETE_BLOG = 'DELETE_BLOG';
 export const LIKE_BLOG = 'LIKE_BLOG';
+export const GET_USERS = 'GET_USERS';
+export const ADD_COMMENT = 'ADD_COMMENT';

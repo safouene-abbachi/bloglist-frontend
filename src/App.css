@@ -16,3 +16,12 @@
     padding: 10px;
     margin-bottom: 10px;
   }
+  .navbar{
+    display: flex;
+    justify-content: space-around;
+    border: 1px solid;
+    background:lightgray;
+  }
+  table, th, td {
+    border: 1px solid black;
+  }
