@@ -8,6 +8,7 @@ import Users from './components/Users';
 import BlogsPerUser from './components/BlogsPerUser';
 import NavBar from './components/NavBar';
 import { initilizeBlogs } from './redux/reducers/blogReducer';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 // import BlogView from './components/BlogView';
 import Blog from './components/Blog';

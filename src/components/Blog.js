@@ -1,23 +1,22 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
+import { Button, ListGroup, Card, InputGroup, Form } from 'react-bootstrap';
 import {
   addCommentToBlog,
   deleteBlogById,
   updateBlog,
 } from '../redux/reducers/blogReducer';
+
 const blogStyle = {
   paddingTop: 10,
   paddingLeft: 2,
-  border: 'solid',
-  borderWidth: 1,
   marginBottom: 5,
 };
 const boxStyle = {
   display: 'flex',
   justifyContent: 'space-between',
 };
-const titleStyle = { fontSize: '30px', fontWeight: 'bold' };
 
 const Blog = ({ blog }) => {
   const [showInfo, setShowInfo] = useState(false);
@@ -42,42 +41,64 @@ const Blog = ({ blog }) => {
   console.log('🚀 ~ oneBlog', oneBlog);
   const addComment = (title, id) => {
     dispatch(addCommentToBlog(title, id));
+    setValue('');
   };
   return (
-    <div style={blogStyle} className="blog">
-      <div style={boxStyle}>
-        <span style={titleStyle}>
-          {oneBlog?.author}-{oneBlog?.title}
-        </span>
-        <button onClick={() => setShowInfo(!showInfo)}>
-          {showInfo ? 'hide' : 'view'}
-        </button>
-      </div>
-      <div style={showDetails} className="togglableContent">
-        <p>{oneBlog?.url}</p>
-        <span className="likes">{oneBlog?.likes}</span>
-        <button onClick={() => addLikesToBlog(oneBlog)}>like</button>
-        <p>Added by {oneBlog?.author}</p>
-        <h2>Comments</h2>
-        <input
-          type="text"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          placeholder="type here..."
-        />
-        <button onClick={() => addComment(value, oneBlog.id)}>
-          Add comment
-        </button>
-        <ul>
-          {oneBlog?.comments.map((comment) => (
-            <li key={comment.id}>{comment.title}</li>
-          ))}
-        </ul>
-        {showDeleteButton && (
-          <button onClick={() => deleteBlog(oneBlog)}>remove</button>
-        )}
-      </div>
-    </div>
+    <Card style={blogStyle}>
+      <Card.Body>
+        <div style={boxStyle}>
+          <Card.Title>
+            {' '}
+            {oneBlog?.author}-{oneBlog?.title}
+          </Card.Title>
+          <Button
+            variant="outline-primary"
+            onClick={() => setShowInfo(!showInfo)}
+          >
+            {' '}
+            {showInfo ? 'hide' : 'view'}
+          </Button>
+        </div>
+        <div style={showDetails} className="togglableContent">
+          <Card.Link href={oneBlog?.url}>{oneBlog?.url}</Card.Link>
+
+          <p>Added by {oneBlog?.author}</p>
+          <h2>Comments</h2>
+
+          <InputGroup className="mb-3">
+            <Form.Control
+              placeholder="type here..."
+              aria-label="type here..."
+              aria-describedby="basic-addon2"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+            />
+            <Button
+              variant="outline-success"
+              id="button-addon2"
+              onClick={() => addComment(value, oneBlog.id)}
+            >
+              Add comment
+            </Button>
+          </InputGroup>
+
+          <ListGroup variant="flush">
+            {oneBlog?.comments.map((comment) => (
+              <ListGroup.Item key={comment.id}>{comment.title}</ListGroup.Item>
+            ))}
+          </ListGroup>
+
+          {showDeleteButton && (
+            <Button variant="danger" onClick={() => deleteBlog(oneBlog)}>
+              remove
+            </Button>
+          )}
+          <Button variant="warning" onClick={() => addLikesToBlog(oneBlog)}>
+            {oneBlog?.likes} likes
+          </Button>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
 
